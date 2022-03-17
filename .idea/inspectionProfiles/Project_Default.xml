@@ -1,0 +1,15 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyUnresolvedReferencesInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredIdentifiers">
+        <list>
+          <option value="TestCase.test_search.chromedriver_py" />
+          <option value="pip._internal.pep425tags" />
+          <option value="po.baidu_page" />
+          <option value="common.request_util" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
