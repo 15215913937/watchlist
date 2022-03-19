@@ -2,6 +2,8 @@ from flask import Flask, render_template
 
 app = Flask(__name__)
 
+app.debug = True
+
 
 @app.route('/')
 @app.route('/index')
@@ -19,7 +21,7 @@ def login():  # put application's code here
         {'title': 'WALL-E', 'year': '2008'},
         {'title': 'The Pork of Music', 'year': '2012'}
     ]
-    return render_template('index.html', name=name,movies = movies)
+    return render_template('index.html', name=name, movies=movies)
 
 
 if __name__ == '__main__':
