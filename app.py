@@ -17,6 +17,8 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = prefix + os.path.join(app.root_path, 'data.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # 关闭对模型 修改的监控
 db = SQLAlchemy(app)
+
+
 # 创建数据库模型
 # 模型类要声明继承 db.Model
 class User(db.Model):  # 表名将会是 user（自动生成，小写处理）
@@ -31,11 +33,19 @@ class Movie(db.Model):
     title = db.Column(db.String(60))  # 电影标题
     year = db.Column(db.String(4))  # 电影年份
 
+
 @app.cli.command()
 @click.option('--drop', is_flag=True, help='Create after drop.')
-@app.route('/')
-@app.route('/index')
-def login():  # put application's code here
+def initdb(drop):
+    if drop:
+        db.drop_all()
+    db.create_all()
+    click.echo('Initialized database.')
+
+
+@app.cli.command()
+def forge():
+    db.create_all()
     name = '沈奇男'
     movies = [
         {'title': 'My Neighbor Totoro', 'year': '1988'},
@@ -49,8 +59,23 @@ def login():  # put application's code here
         {'title': 'WALL-E', 'year': '2008'},
         {'title': 'The Pork of Music', 'year': '2012'}
     ]
-    return render_template('index.html', name=name, movies=movies)
+    user = User(name=name)
+    db.session.add(user)
+    for m in movies:
+        movie = Movie(title=m['title'], year=m['year'])
+        db.session.add(movie)
+    db.session.commit()
+    click.echo('Done.')
 
+
+@app.route('/')
+@app.route('/index')
+def index():  # put application's code here
+    user = User.query.first()
+    movies = Movie.query.all()
+
+    return render_template('index.html', user=user, movies=movies)
 
 if __name__ == '__main__':
+
     app.run()
